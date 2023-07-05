@@ -3,6 +3,7 @@ token.json
 run.cmd
 local.env
 __history__/*
+poetry.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

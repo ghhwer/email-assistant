@@ -71,14 +71,17 @@ def ai_organize_email(id, sender, recipient, subject, contains_html, normalized_
         function_name = response_message["function_call"]["name"]
         fuction_to_call = available_functions[function_name]
         function_args = json.loads(response_message["function_call"]["arguments"])
-        function_response = fuction_to_call(
-            email_id=id, 
-            new_folder=function_args.get('new_folder'),
-            is_ad=function_args.get('is_ad'), 
-            is_urgent=function_args.get('is_urgent'), 
-            assistent_notes=function_args.get('assistent_notes')
-        )
-        # Return the desision
-        return {'decision': function_response, 'openai_usage': response.get('usage', {})}
+        if function_args.get('new_folder') in available_folders:
+            function_response = fuction_to_call(
+                email_id=id, 
+                new_folder=function_args.get('new_folder'),
+                is_ad=function_args.get('is_ad'), 
+                is_urgent=function_args.get('is_urgent'), 
+                assistent_notes=function_args.get('assistent_notes')
+            )
+            # Return the desision
+            return {'decision': function_response, 'openai_usage': response.get('usage', {})}
+        else:
+            raise ValueError('The assistant placed the email on a nonexistent folder')
     else:
         raise ValueError('The assistent did not call a function')

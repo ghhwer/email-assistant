@@ -35,6 +35,7 @@ def ai_task_run(id, sender, recipient, subject, contains_html, normalized_body, 
             print(f'AI has failed to make a decision about the email: {id}, retying ({i+1}/{retries})')
             print(f'{e}')
             delegated_task_status = False
+            response = {'error': f'{e}'}
     return {
         'status': delegated_task_status,
         'response': response
