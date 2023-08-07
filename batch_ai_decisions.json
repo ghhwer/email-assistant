@@ -1,0 +1,53 @@
+[
+    {
+        "status": true,
+        "response": {
+            "decision": {
+                "email_id": "189c5ce4a84c150d",
+                "new_folder": "banking",
+                "is_ad": false,
+                "is_urgent": false,
+                "assistent_notes": "Bank statement from Stix"
+            },
+            "openai_usage": {
+                "prompt_tokens": 298,
+                "completion_tokens": 39,
+                "total_tokens": 337
+            }
+        }
+    },
+    {
+        "status": true,
+        "response": {
+            "decision": {
+                "email_id": "189c5d8c98ad5bec",
+                "new_folder": "promotions",
+                "is_ad": true,
+                "is_urgent": false,
+                "assistent_notes": "Promotional email with discount offers"
+            },
+            "openai_usage": {
+                "prompt_tokens": 446,
+                "completion_tokens": 40,
+                "total_tokens": 486
+            }
+        }
+    },
+    {
+        "status": true,
+        "response": {
+            "decision": {
+                "email_id": "189c75874c0b9207",
+                "new_folder": "promotions",
+                "is_ad": true,
+                "is_urgent": false,
+                "assistent_notes": "Promotional email about new game releases."
+            },
+            "openai_usage": {
+                "prompt_tokens": 302,
+                "completion_tokens": 41,
+                "total_tokens": 343
+            }
+        }
+    }
+]

@@ -1,9 +1,9 @@
 {
     "my_labels": [
         "work", "personal", "banking", "payment-info", "job-application", "automated-notifications", 
-        "promotions", "social", "urgent-action-required"
+        "promotions", "social", "urgent-action-required", "education"
     ],
     "user_id": "me",
     "ai_read_labels": ["INBOX", "UNREAD"],
-    "credentials_json": "my-gmail-bot-391322-d71aae822aac.json"
+    "credentials_json": "credentials.json"
 }

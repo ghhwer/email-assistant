@@ -23,8 +23,8 @@ if __name__ == '__main__':
     batch_process_mails = read_json_file('batch_process_mails.json')
     # Process the emails  
     run_ai_read_emails(batch_process_mails, human_preferences, concurrent_tasks=5)
-    batch_ai_decisions = read_json_file('batch_ai_decisions.json')
+    #batch_ai_decisions = read_json_file('batch_ai_decisions.json')
     # Push the changes out to gmail
-    run_apply_changes(service, human_preferences, batch_ai_decisions)    
+    #run_apply_changes(service, human_preferences, batch_ai_decisions)    
     # Manage the historical data
-    manage_historical_folder(months_delta=6, file_list=['batch_process_mails.json', 'batch_ai_decisions.json'])
+    #manage_historical_folder(months_delta=6, file_list=['batch_process_mails.json', 'batch_ai_decisions.json'])

@@ -32,7 +32,7 @@ def run_apply_changes(service, human_preferences, batch_ai_decisions):
             label_ids.append(label_meta[new_folder])
             label_ids.append(label_meta['read-by-ai'])
             add_label_to_email(service, user_id, mail_id, label_ids)
-            mark_email_as_read(service, user_id, mail_id)
+            #mark_email_as_read(service, user_id, mail_id)
         else:
             continue
 

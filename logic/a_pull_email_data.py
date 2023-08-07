@@ -1,6 +1,7 @@
 from vendor.gmail import get_gmail_service 
 from tools.io import read_json_file, save_data_as_json
 
+
 import base64
 import re
 import json
@@ -62,18 +63,25 @@ def message_full_recursion(m):
             text += text_aux
     return html, text
 
+def get_emails_paginated(userId, labelIds, service, q=None):
+    exit, pageToken = False, None
+    while not exit:
+        unread_msgs = service.users().messages().list(userId=userId,labelIds=labelIds, pageToken=pageToken, q=q).execute()
+        mssg_list, pageToken = unread_msgs.get('messages', []), unread_msgs.get('nextPageToken', None)
+        print ("Total unread messages in inbox in page: ", str(len(mssg_list)))
+        for mssg in mssg_list:
+            yield mssg
+        if pageToken is None:
+            exit = True
+
+
 def list_emails(service, user_id = 'me', labels = ['INBOX', 'UNREAD']):
     # Getting all the unread messages from Inbox
     # labelIds can be changed accordingly
-    unread_msgs = service.users().messages().list(userId='me',labelIds=labels).execute()
-
+    unread_msgs = get_emails_paginated(userId='me',labelIds=labels, service=service, q='-(label: read-by-ai)')
     # We get a dictonary. Now reading values for the key 'messages'
-    mssg_list = unread_msgs.get('messages', [])
-    if (len(mssg_list) == 0):
-        return False
-    print ("Total unread messages in inbox: ", str(len(mssg_list)))
     final_list = [ ]
-    for mssg in mssg_list:
+    for mssg in unread_msgs:
         m_id = mssg['id']
         print(f'reading email: {m_id}')
         message = service.users().messages().get(userId=user_id, id=m_id).execute() # fetch the message using API
@@ -91,6 +99,7 @@ def list_emails(service, user_id = 'me', labels = ['INBOX', 'UNREAD']):
             'html': html
         }
         final_list.append(msg_fwd)
+    print(len(final_list), 'messages after filtering')
     return final_list
 
 
