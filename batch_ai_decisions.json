@@ -3,16 +3,16 @@
         "status": true,
         "response": {
             "decision": {
-                "email_id": "189c5ce4a84c150d",
-                "new_folder": "banking",
+                "email_id": "189c75874c0b9207",
+                "new_folder": "promotions",
                 "is_ad": false,
                 "is_urgent": false,
-                "assistent_notes": "Bank statement from Stix"
+                "assistent_notes": "Promotional email for game releases"
             },
             "openai_usage": {
-                "prompt_tokens": 298,
-                "completion_tokens": 39,
-                "total_tokens": 337
+                "prompt_tokens": 302,
+                "completion_tokens": 40,
+                "total_tokens": 342
             }
         }
     },
@@ -24,12 +24,12 @@
                 "new_folder": "promotions",
                 "is_ad": true,
                 "is_urgent": false,
-                "assistent_notes": "Promotional email with discount offers"
+                "assistent_notes": "Promotional email with exclusive discounts"
             },
             "openai_usage": {
                 "prompt_tokens": 446,
-                "completion_tokens": 40,
-                "total_tokens": 486
+                "completion_tokens": 34,
+                "total_tokens": 480
             }
         }
     },
@@ -37,16 +37,50 @@
         "status": true,
         "response": {
             "decision": {
-                "email_id": "189c75874c0b9207",
-                "new_folder": "promotions",
-                "is_ad": true,
+                "email_id": "189cb243d46ea9a6",
+                "new_folder": "automated-notifications",
+                "is_ad": false,
                 "is_urgent": false,
-                "assistent_notes": "Promotional email about new game releases."
+                "assistent_notes": "Organized email as an automated notification."
             },
             "openai_usage": {
-                "prompt_tokens": 302,
-                "completion_tokens": 41,
-                "total_tokens": 343
+                "prompt_tokens": 518,
+                "completion_tokens": 43,
+                "total_tokens": 561
+            }
+        }
+    },
+    {
+        "status": true,
+        "response": {
+            "decision": {
+                "email_id": "189c5ce4a84c150d",
+                "new_folder": "automated-notifications",
+                "is_ad": false,
+                "is_urgent": false,
+                "assistent_notes": "Automated email with transaction summary"
+            },
+            "openai_usage": {
+                "prompt_tokens": 298,
+                "completion_tokens": 42,
+                "total_tokens": 340
+            }
+        }
+    },
+    {
+        "status": true,
+        "response": {
+            "decision": {
+                "email_id": "189cafd618347dae",
+                "new_folder": "promotions",
+                "is_ad": false,
+                "is_urgent": false,
+                "assistent_notes": "Promotional email from GOL Linhas Aéreas"
+            },
+            "openai_usage": {
+                "prompt_tokens": 320,
+                "completion_tokens": 45,
+                "total_tokens": 365
             }
         }
     }
