@@ -1,5 +1,5 @@
 from __future__ import print_function
-
+import os 
 import os.path
 
 from google.auth.transport.requests import Request
@@ -7,6 +7,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from google.auth.exceptions import RefreshError
 
 from urllib.parse import unquote
 SCOPE_GMAIL_META = 'https://www.googleapis.com'
@@ -16,11 +17,7 @@ SCOPES = [
     ['/auth/gmail.readonly', '/auth/gmail.labels', '/auth/gmail.modify'] 
 ]
 
-
-def get_gmail_service():
-    """Shows basic usage of the Gmail API.
-    Lists the user's Gmail labels.
-    """
+def _get_service():
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -39,11 +36,20 @@ def get_gmail_service():
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
+    # Call the Gmail API
+    service = build('gmail', 'v1', credentials=creds)
+    # Get the user's preferences
+    return service
+
+def get_gmail_service():
+    """Shows basic usage of the Gmail API.
+    Lists the user's Gmail labels.
+    """
     try:
-        # Call the Gmail API
-        service = build('gmail', 'v1', credentials=creds)
-        # Get the user's preferences
-        return service
+        return _get_service()
+    except RefreshError as error:
+        os.remove("token.json")
+        return _get_service()
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
         print(f'An error occurred: {error}')

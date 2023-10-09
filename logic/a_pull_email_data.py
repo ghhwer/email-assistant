@@ -45,7 +45,7 @@ def clean_msg(headers, message_payload):
     data = message_payload['data']
     data = clean_base64(data)
 
-    return data.decode(charset)
+    return data.decode(charset, errors="ignore")
 
 def message_full_recursion(m):
     html, text = '', ''

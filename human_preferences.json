@@ -5,5 +5,7 @@
     ],
     "user_id": "me",
     "ai_read_labels": ["INBOX", "UNREAD"],
-    "credentials_json": "credentials.json"
+    "credentials_json": "credentials.json",
+    "max_len_full_email": 4096,
+    "use_gpt_4": false
 }

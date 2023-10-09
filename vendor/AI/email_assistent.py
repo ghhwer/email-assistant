@@ -23,7 +23,7 @@ def organize_email(email_id, new_folder, is_ad, is_urgent, assistent_notes):
         'assistent_notes':assistent_notes
     }
 
-def ai_organize_email(id, sender, recipient, subject, contains_html, normalized_body, available_folders):
+def ai_organize_email(id, sender, recipient, subject, contains_html, normalized_body, available_folders, use_gpt_4=False):
     # Step 1: make the prompt
     prompt = make_ai_email_text(sender, recipient, subject, contains_html, normalized_body)
     # Step 2: send the conversation and available functions to GPT
@@ -41,11 +41,11 @@ def ai_organize_email(id, sender, recipient, subject, contains_html, normalized_
                     },
                     "is_ad": {
                         "type": "boolean",
-                        "description": "is this an AD?",
+                        "description": "Defines if this is an advertisement",
                     },
                     "is_urgent": {
                         "type": "boolean",
-                        "description": "is this urgent?",
+                        "description": "Defines if this is urgent",
                     },
                     "assistent_notes": {
                         "type": "string",
@@ -59,7 +59,7 @@ def ai_organize_email(id, sender, recipient, subject, contains_html, normalized_
     available_functions = {"organize_email": organize_email,} 
     # Delegate task to AI
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-0613",
+        model="gpt-4-0613" if use_gpt_4 else "gpt-3.5-turbo-0613",
         messages=messages,
         functions=functions,
         function_call={"name": "organize_email"},

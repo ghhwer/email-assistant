@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import re
-import json
+import time
+from unidecode import unidecode
 
 from tools.threaded_pool import ThreadPool
 from tools.io import save_data_as_json, read_json_file
@@ -13,6 +14,7 @@ def clean_html(html_text):
     return cleaned_text
 
 def simple_format_clean_text(text):
+    text = unidecode(text)
     text = text.replace('\u200c', '')
     text = re.sub(r'\t', '', text)
     text = re.sub(r'\r', '', text)
@@ -22,17 +24,21 @@ def simple_format_clean_text(text):
     return text
 
 # ==== AI PARALLEL START ====
-def ai_task_run(id, sender, recipient, subject, contains_html, normalized_body, available_folders, retries=3):
+def ai_task_run(id, sender, recipient, subject, contains_html, normalized_body, available_folders, retries=3, use_gpt_4=False):
     print(f'AI is looking at email: {id}')
     delegated_task_status, response = False, {}
     for i in range(retries):
         try:
             print(f'AI has made a decision about the email: {id}')
-            response = ai_organize_email(id, sender, recipient, subject, contains_html, normalized_body, available_folders)
+            response = ai_organize_email(
+                id, sender, recipient, subject, contains_html, normalized_body, available_folders,
+                use_gpt_4=use_gpt_4
+            )
             delegated_task_status = True
             break
         except Exception as e:
             print(f'AI has failed to make a decision about the email: {id}, retying ({i+1}/{retries})')
+            time.sleep(1)
             print(f'{e}')
             delegated_task_status = False
             response = {'error': f'{e}'}
@@ -45,6 +51,7 @@ def ai_task_run(id, sender, recipient, subject, contains_html, normalized_body, 
 def run_ai_read_emails(emails, human_preferences, concurrent_tasks=5):    
     # Create tasks
     tasks = []
+    max_len_full_email = human_preferences.get('max_len_full_email', 4098)
     for email in emails:
         email_html = email.get('html', None)
         email_message = email.get('message', None)
@@ -62,6 +69,8 @@ def run_ai_read_emails(emails, human_preferences, concurrent_tasks=5):
         else:
             email_body_norm = email_subject
         email_body_norm = simple_format_clean_text(email_body_norm)
+        if(len(email_body_norm) >= max_len_full_email):
+            email_body_norm = email_body_norm[:max_len_full_email]
         tasks.append({
             'kwargs':{
                 'id':                   email.get('id'),
@@ -70,7 +79,8 @@ def run_ai_read_emails(emails, human_preferences, concurrent_tasks=5):
                 'subject':              email.get('subject'),
                 'contains_html':        is_html,
                 'normalized_body':      email_body_norm,
-                'available_folders':    human_preferences.get('my_labels')
+                'available_folders':    human_preferences.get('my_labels'),
+                'use_gpt_4':            human_preferences.get('use_gpt_4')
             }
         })
     tp = ThreadPool(concurrent_tasks, ai_task_run, tasks)

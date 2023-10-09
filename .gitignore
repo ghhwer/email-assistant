@@ -3,7 +3,9 @@ token.json
 run.cmd
 local.env
 __history__/*
-poetry.lock
+
+batch_process_mails.json
+batch_ai_decisions.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
