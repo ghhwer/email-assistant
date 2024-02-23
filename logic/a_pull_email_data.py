@@ -1,11 +1,11 @@
 from vendor.gmail import get_gmail_service 
 from tools.io import read_json_file, save_data_as_json
-
+from tools.threaded_pool import ThreadPool
 
 import base64
 import re
 import json
-
+import os
 from urllib.parse import unquote
 
 def find_from(message_payload):
@@ -74,36 +74,52 @@ def get_emails_paginated(userId, labelIds, service, q=None):
         if pageToken is None:
             exit = True
 
-
+def read_single_email(mssg, user_id = 'me'):
+    service = get_gmail_service()
+    m_id = mssg['id']
+    print(f'reading email: {m_id}')
+    message = service.users().messages().get(userId=user_id, id=m_id).execute() # fetch the message using API
+    payload = message.get('payload')
+    parts = payload.get('parts', None)
+    html, plain_text_message = message_full_recursion(parts)
+    return {
+        'id':m_id,
+        'current_labels':message.get('labelIds', []),
+        'snippet': message.get('snippet', []),
+        'from': find_from(payload),
+        'subject': find_subject(payload),
+        'delivered_to': find_delivered_to(payload),
+        'message': plain_text_message,
+        'html': html
+    }
 def list_emails(service, user_id = 'me', labels = ['INBOX', 'UNREAD']):
     # Getting all the unread messages from Inbox
     # labelIds can be changed accordingly
     unread_msgs = get_emails_paginated(userId='me',labelIds=labels, service=service, q='-(label: read-by-ai)')
     # We get a dictonary. Now reading values for the key 'messages'
-    final_list = [ ]
+    tasks = [ ]
+
     for mssg in unread_msgs:
-        m_id = mssg['id']
-        print(f'reading email: {m_id}')
-        message = service.users().messages().get(userId=user_id, id=m_id).execute() # fetch the message using API
-        payload = message.get('payload')
-        parts = payload.get('parts', None)
-        html, plain_text_message = message_full_recursion(parts)
-        msg_fwd = {
-            'id':m_id,
-            'current_labels':message.get('labelIds', []),
-            'snippet': message.get('snippet', []),
-            'from': find_from(payload),
-            'subject': find_subject(payload),
-            'delivered_to': find_delivered_to(payload),
-            'message': plain_text_message,
-            'html': html
-        }
-        final_list.append(msg_fwd)
-    print(len(final_list), 'messages after filtering')
+        tasks.append({
+            'args': (mssg,),
+            'kwargs': {'user_id': user_id}
+        })
+    print(len(tasks))
+    tp = ThreadPool(2, read_single_email, tasks)
+    tp.run()
+    final_list = tp.results
+    if len(tp.errors) > 0:
+        print(f'Errors: {tp.errors}')
+        print(f'Final list: {final_list}')
+        raise ValueError('Error reading emails')
     return final_list
 
 
 def fetch_email_json(human_preferences, service):
+    # Check if the file exists
+    if os.path.exists('batch_process_mails.json'):
+        print('Batch process mails already exists, skipping')
+        return True
     data = list_emails(
         service, 
         user_id=human_preferences.get('user_id'),

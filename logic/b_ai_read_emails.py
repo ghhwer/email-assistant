@@ -24,7 +24,7 @@ def simple_format_clean_text(text):
     return text
 
 # ==== AI PARALLEL START ====
-def ai_task_run(id, sender, recipient, subject, contains_html, normalized_body, available_folders, retries=3, use_gpt_4=False):
+def ai_task_run(id, sender, recipient, subject, contains_html, normalized_body, available_folders, retries=3, model='gpt-4'):
     print(f'AI is looking at email: {id}')
     delegated_task_status, response = False, {}
     for i in range(retries):
@@ -32,7 +32,7 @@ def ai_task_run(id, sender, recipient, subject, contains_html, normalized_body, 
             print(f'AI has made a decision about the email: {id}')
             response = ai_organize_email(
                 id, sender, recipient, subject, contains_html, normalized_body, available_folders,
-                use_gpt_4=use_gpt_4
+                model=model
             )
             delegated_task_status = True
             break
@@ -80,7 +80,7 @@ def run_ai_read_emails(emails, human_preferences, concurrent_tasks=5):
                 'contains_html':        is_html,
                 'normalized_body':      email_body_norm,
                 'available_folders':    human_preferences.get('my_labels'),
-                'use_gpt_4':            human_preferences.get('use_gpt_4')
+                'model':                human_preferences.get('model')
             }
         })
     tp = ThreadPool(concurrent_tasks, ai_task_run, tasks)

@@ -20,6 +20,10 @@ Before running the project, ensure you have the following:
   OPENAI_API_KEY=<YOUR-KEY>
   ```
   - [OpenAI's Guide](https://platform.openai.com/docs/api-reference)
+- You may also use any other OPENAI compatible endpoint by changing the `OPENAI_API_BASE` variable in `local.env` to the desired endpoint. Example for deepinfra:
+  ```bash
+  OPENAI_API_BASE=https://api.deepinfra.com/v1/openai
+  ```
 
 ## Setup
 
@@ -50,7 +54,8 @@ To set up the project, follow these steps:
        ],
        "user_id": "me",
        "ai_read_labels": ["INBOX", "UNREAD"],
-       "credentials_json": "my-gmail-bot-391322-d71aae822aac.json"
+       "credentials_json": "my-gmail-bot-391322-d71aae822aac.json",
+       "model": "<any model from OpenAI or any other compatible endpoint>",
    }
    ```
 
