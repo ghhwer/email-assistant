@@ -44,7 +44,8 @@ def ai_organize_email_llama(id, sender, recipient, subject, contains_html, norma
     
     # Create a single shot example of the conversation to stabilize the response 
     text_first_shot = make_ai_email_text('example@example.com', recipient, "an example", True, "this is an example email")
-    text += '\n'+instruction.format(["folder1", "folder2", "folder3"])
+    text_first_shot_available_folders_text = ", ".join(["folder1", "folder2", "folder3"])
+    text_first_shot += '\n'+instruction.format(text_first_shot_available_folders_text)
     response_first_shot = "Even though this is an example, I will provide a response to show you how to do it. The email should be moved to the folder 'folder1' because it is an advertisement and it is urgent."
     response_first_shot = f"{response_first_shot}\n(1) folder1\n(2) yes\n(3) yes"
 
